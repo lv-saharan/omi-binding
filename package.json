@@ -1,0 +1,34 @@
+{
+  "name": "omi-binding",
+  "version": "1.0.0",
+  "description": "a model binding module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node esbuild.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lv-saharan/omi-binding.git"
+  },
+  "keywords": [
+    "omi",
+    "binding",
+    "model",
+    "mvvm",
+    "omii",
+    "data-binding"
+  ],
+  "author": "lv-saharan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lv-saharan/omi-binding/issues"
+  },
+  "homepage": "https://github.com/lv-saharan/omi-binding#readme",
+  "dependencies": {
+    "omi": "^6.25.8"
+  },
+  "devDependencies": {
+    "esbuild": "^0.15.7"
+  }
+}
