@@ -26,6 +26,8 @@ define(
       likes: ["tv", "music", "reading"],
     };
     //指定绑定的范围
+    //不指定时绑定范围是当前组件
+    //可以通过updateBindings更新绑定
     get bindingScope() {
       return this.data;
     }
