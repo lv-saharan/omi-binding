@@ -116,5 +116,5 @@ esbuild.build({
     }
 })
 ```
-esbuild + nginx 可以是最简洁，高效的开发模式
+esbuild + nginx 可能是目前最简洁，高效的开发模式
 
