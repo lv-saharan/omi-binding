@@ -86,7 +86,7 @@ render(<app-main />, "body");
 ```
 ## use esbuild to run the examples
 
-not just use esbuild and live server | nginx ....
+just use esbuild and live server | nginx ....
 ```bash
 npm start
 ```
