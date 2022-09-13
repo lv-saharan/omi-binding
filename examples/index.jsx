@@ -3,7 +3,7 @@ import "../src/index.js";
 
 render(
   <fieldset>
-    <legend>binding test,binding location</legend>
+    <legend>binding location</legend>
     <input o-model="location.href" style="width:50rem;"></input>
   </fieldset>,
   "body"
