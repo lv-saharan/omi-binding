@@ -118,7 +118,6 @@ addBindingHandler((el, path, scope) => {
 })
 
 extend('model', (el, path, scope) => {
-    console.log("model", el, path, scope)
     let raw = scope
     scope = scope.bindingScope ?? scope.props?.bindingScope ?? scope
     if (scope === false) {
