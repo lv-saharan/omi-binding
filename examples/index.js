@@ -1442,11 +1442,9 @@ addBindingHandler((el, path, scope) => {
   }
 });
 extend2("model", (el, path, scope) => {
+  scope = scope || window;
   let raw = scope;
   scope = scope.bindingScope ?? scope.props?.bindingScope ?? scope;
-  if (scope === false) {
-    raw = scope = window;
-  }
   let bindings = raw.__bindings ?? (raw.__bindings = []);
   Promise.resolve().then(() => {
     for (let handler of BINDING_HANDLERS) {
@@ -1479,41 +1477,82 @@ render(
   })),
   "body"
 );
+var _a;
 define(
   "app-main",
-  class extends Component {
+  (_a = class extends Component {
     data = {
       name: "lv-saharan",
-      likes: ["tv", "music", "reading"]
+      gender: "male",
+      likes: ["tv", "music", "reading"],
+      get likesCount() {
+        return this.likes.length;
+      },
+      some: {
+        prop1: 123,
+        prop2: true
+      }
     };
     get bindingScope() {
       return this.data;
     }
     showLikes = true;
     render() {
-      return /* @__PURE__ */ h("fieldset", null, /* @__PURE__ */ h("legend", null, "form binding"), /* @__PURE__ */ h("ul", null, /* @__PURE__ */ h("li", null, "name:", /* @__PURE__ */ h("input", {
-        "o-model": "name"
-      })), this.showLikes ? /* @__PURE__ */ h("li", null, "likes:", ["tv", "game", "reading", "music", "others"].map((l) => /* @__PURE__ */ h("label", null, /* @__PURE__ */ h("input", {
+      return /* @__PURE__ */ h("fieldset", null, /* @__PURE__ */ h("legend", null, "form binding"), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", null, "name:"), /* @__PURE__ */ h("input", {
+        "o-model": "name",
+        style: "width:50rem;"
+      })), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", null, "gender:"), /* @__PURE__ */ h("input", {
+        "o-model": "gender",
+        type: "radio",
+        value: "male",
+        name: "gender"
+      }), "male", /* @__PURE__ */ h("input", {
+        "o-model": "gender",
+        type: "radio",
+        value: "female",
+        name: "gender"
+      }), "female"), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", null, "likes:"), ["tv", "game", "reading", "music", "others"].map((l) => /* @__PURE__ */ h("label", null, /* @__PURE__ */ h("input", {
         "o-model": "likes",
         type: "checkbox",
-        value: l
-      }), l))) : null), /* @__PURE__ */ h("button", {
+        value: l,
+        onChange: (evt) => {
+          updateBindings();
+        }
+      }), l))), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", null, "likes count"), /* @__PURE__ */ h("select", {
+        "o-model": "likesCount",
+        disabled: true
+      }, /* @__PURE__ */ h("option", null, "1"), /* @__PURE__ */ h("option", null, "2"), /* @__PURE__ */ h("option", null, "3"), /* @__PURE__ */ h("option", null, "4"), /* @__PURE__ */ h("option", null, "5"))), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", null, "some"), "prop1:", /* @__PURE__ */ h("input", {
+        type: "number",
+        "o-model": "some.prop1"
+      }), "  prop2:", /* @__PURE__ */ h("input", {
+        type: "checkbox",
+        "o-model": "some.prop2"
+      })), /* @__PURE__ */ h("button", {
         onClick: (evt) => {
           this.data.name = "sa";
           this.updateBindings();
         }
-      }, "set name to sa"), /* @__PURE__ */ h("button", {
-        onClick: (evt) => {
-          this.showLikes = !this.showLikes;
-          this.update();
-        }
-      }, "toggle likes"), /* @__PURE__ */ h("button", {
+      }, "set name to sa and updateBindings"), /* @__PURE__ */ h("button", {
         onClick: (evt) => {
           alert(JSON.stringify(this.data));
         }
       }, "show data"));
     }
-  }
+  }, __publicField(_a, "css", `
+    div{
+      line-height: 1.5;
+      margin: .6rem;
+    }
+    div span{
+      display:inline-block;
+      margin-right:.2rem;
+      width:10rem;
+    }
+    button{
+      padding:.5rem;
+      margin:.3rem;
+    }
+    `), _a)
 );
 render(/* @__PURE__ */ h("app-main", null), "body");
 /**

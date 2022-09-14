@@ -118,12 +118,9 @@ addBindingHandler((el, path, scope) => {
 })
 
 extend('model', (el, path, scope) => {
+    scope = scope || window
     let raw = scope
     scope = scope.bindingScope ?? scope.props?.bindingScope ?? scope
-    if (scope === false) {
-        raw = scope = window
-    }
-
     let bindings = raw.__bindings ?? (raw.__bindings = [])
 
     //the o-model attr 顺序可以打乱
