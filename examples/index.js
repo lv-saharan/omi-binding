@@ -1442,7 +1442,6 @@ addBindingHandler((el, path, scope) => {
   }
 });
 extend2("model", (el, path, scope) => {
-  console.log("model", el, path, scope);
   let raw = scope;
   scope = scope.bindingScope ?? scope.props?.bindingScope ?? scope;
   if (scope === false) {
@@ -1474,7 +1473,7 @@ extend2("model", (el, path, scope) => {
 
 // examples/index.jsx
 render(
-  /* @__PURE__ */ h("fieldset", null, /* @__PURE__ */ h("legend", null, "binding test,binding location"), /* @__PURE__ */ h("input", {
+  /* @__PURE__ */ h("fieldset", null, /* @__PURE__ */ h("legend", null, "binding location"), /* @__PURE__ */ h("input", {
     "o-model": "location.href",
     style: "width:50rem;"
   })),
