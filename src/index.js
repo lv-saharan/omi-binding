@@ -13,6 +13,17 @@ const isChangeOnUpdate = el => {
 }
 const updateSelect = (el, path, scope) => {
     let val = get(scope, path)
+    if (val instanceof Array && el.multiple) {
+        Array.from(el.options).forEach(option => {
+            if (val.some(v => v.toString() == option.value)) {
+                option.selected = true
+            } else {
+                option.selected = false
+            }
+        })
+
+        return
+    }
     if (val === false || val === null || val === undefined) {
         val = ''
     }
@@ -26,14 +37,24 @@ addBindingHandler((el, path, scope) => {
     if (el.nodeName === 'SELECT') {
         unbind(el, 'change')
         bind(el, 'change', () => {
-            set(scope, path, el.value)
+            const value = get(scope, path)
+            if (value instanceof Array) {
+                value.splice(0, value.length, ...Array.from(el.selectedOptions).filter(option => option.value != "").map(option => option.value))
+            } else {
+                set(scope, path, el.value)
+            }
         })
         return updateSelect
     }
 })
 
 const updateRadio = (el, path, scope) => {
-    el.checked = get(scope, path) === el.value
+    let val = get(scope, path)
+    if (val instanceof Array) {
+        el.checked = val.some(v => v.toString() == el.value)
+        return
+    }
+    el.checked = get(scope, path) == el.value
 }
 
 /**
@@ -43,7 +64,12 @@ addBindingHandler((el, path, scope) => {
     if (el.type === 'radio' && el.nodeName == 'INPUT') {
         unbind(el, 'change')
         bind(el, 'change', () => {
-            set(scope, path, el.value)
+            const value = get(scope, path)
+            if (value instanceof Array) {
+                value.splice(0, value.length, el.value)
+            } else {
+                set(scope, path, el.value)
+            }
         })
         return updateRadio
     }
@@ -53,7 +79,7 @@ const updateCheckbox = (el, path, scope) => {
     const tureVal = el.getAttribute('o-true-value') || true
     let value = get(scope, path)
     if (value instanceof Array) {
-        el.checked = value.includes(el.value)
+        el.checked = value.some(v => v.toString() == el.value)
     } else {
         el.checked = value === tureVal
     }
@@ -118,9 +144,12 @@ addBindingHandler((el, path, scope) => {
 })
 
 extend('model', (el, path, scope) => {
-    scope = scope || window
     let raw = scope
     scope = scope.bindingScope ?? scope.props?.bindingScope ?? scope
+    if (scope === false) {
+        raw = scope = window
+    }
+
     let bindings = raw.__bindings ?? (raw.__bindings = [])
 
     //the o-model attr 顺序可以打乱

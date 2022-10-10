@@ -12,12 +12,20 @@ let options = {
 }
 const esbuild = require('esbuild')
 
-esbuild.build({
-    ...options,
-    watch: {
-        onRebuild(error, result) {
-            if (error) console.error('watch build failed:', error)
-            else console.log('watch build succeeded:', result)
-        },
-    }
-})
+if (mode == "prod") {
+    esbuild.build({
+        ...options,
+        entryPoints: ["src/index.js"],
+        outdir: "dist"
+    })
+} else {
+    esbuild.build({
+        ...options,
+        watch: {
+            onRebuild(error, result) {
+                if (error) console.error('watch build failed:', error)
+                else console.log('watch build succeeded:', result)
+            },
+        }
+    })
+}

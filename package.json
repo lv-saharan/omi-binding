@@ -1,11 +1,12 @@
 {
   "name": "omi-binding",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "a model binding module",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node esbuild.js"
+    "start": "node esbuild.js",
+    "build": "node esbuild.js prod"
   },
   "repository": {
     "type": "git",
