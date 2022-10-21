@@ -90,7 +90,7 @@ just use esbuild and live server | nginx ....
 ```bash
 npm start
 ```
-and then use  [local-dev-server](https://www.github.com/lv-saharan/local-dev-server) to view examples/index.html
+and then use  [local-dev-server](https://www.github.com/lv-saharan/local-dev) to view examples/index.html
 
 //esbuild.js
 ```js
