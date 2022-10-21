@@ -90,7 +90,7 @@ just use esbuild and live server | nginx ....
 ```bash
 npm start
 ```
-and then use live server to view examples/index.html
+and then use  [local-dev-server](https://www.github.com/lv-saharan/local-dev-server) to view examples/index.html
 
 //esbuild.js
 ```js
@@ -118,5 +118,5 @@ esbuild.build({
     }
 })
 ```
-esbuild + nginx 可能是目前最简洁，高效的开发模式
+
 
