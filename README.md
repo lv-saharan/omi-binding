@@ -84,6 +84,20 @@ define(
 render(<app-main />, "body");
 
 ```
+
+### pattern filter
+```js
+ <input
+                pattern="^\d+$"
+                class="form-control"
+                id="code"
+                placeholder="****"
+                o-model="code"
+                required
+              />
+//only number can be input
+```
+
 ## use esbuild to run the examples
 
 just use esbuild and live server | nginx ....

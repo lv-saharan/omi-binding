@@ -15,7 +15,7 @@ const updateSelect = (el, path, scope) => {
     let val = get(scope, path)
     if (val instanceof Array && el.multiple) {
         Array.from(el.options).forEach(option => {
-            if (val.some(v => v.toString() == option.value)) {
+            if (val.some(v => v == option.value)) {
                 option.selected = true
             } else {
                 option.selected = false
@@ -27,7 +27,7 @@ const updateSelect = (el, path, scope) => {
     if (val === false || val === null || val === undefined) {
         val = ''
     }
-    el.value = val.toString()
+    el.value = val
 
 }
 /**
@@ -51,7 +51,7 @@ addBindingHandler((el, path, scope) => {
 const updateRadio = (el, path, scope) => {
     let val = get(scope, path)
     if (val instanceof Array) {
-        el.checked = val.some(v => v.toString() == el.value)
+        el.checked = val.some(v => v == el.value)
         return
     }
     el.checked = get(scope, path) == el.value
@@ -79,7 +79,7 @@ const updateCheckbox = (el, path, scope) => {
     const tureVal = el.getAttribute('o-true-value') || true
     let value = get(scope, path)
     if (value instanceof Array) {
-        el.checked = value.some(v => v.toString() == el.value)
+        el.checked = value.some(v => v == el.value)
     } else {
         el.checked = value === tureVal
     }
@@ -121,13 +121,13 @@ const updateInput = (el, path, scope) => {
  */
 addBindingHandler((el, path, scope) => {
     if (el.nodeName == 'INPUT') {
-        let filter = el.getAttribute('filter')
-        if (filter) {
-            let reg = new RegExp(filter)
+        let pattern = el.getAttribute('pattern')
+        if (pattern) {
+            let reg = new RegExp(pattern)
             unbind(el, 'keypress')
             //过滤输入字符
             bind(el, 'keypress', evt => {
-                if (!reg.test(evt.key)) {
+                if (!reg.test(`${el.value}${evt.key}`)) {
                     evt.preventDefault()
                 }
             })
@@ -142,6 +142,32 @@ addBindingHandler((el, path, scope) => {
         return updateInput
     }
 })
+
+//input
+
+const updateComponent = (el, path, scope) => {
+    el.value = get(scope, path)
+    // checkRequired(el)
+}
+/**
+ * add customEl binding handler
+ */
+addBindingHandler((el, path, scope) => {
+    if (Reflect.has(el, "value")) {
+        unbind(el, 'change')
+        bind(el, 'change', () => {
+            const value = get(scope, path)
+            if (value instanceof Array) {
+                value.splice(0, value.length, el.value)
+            } else {
+                set(scope, path, el.value)
+            }
+        })
+
+        return updateComponent
+    }
+})
+
 
 extend('model', (el, path, scope) => {
     let raw = scope
