@@ -127,7 +127,7 @@ addBindingHandler((el, path, scope) => {
             unbind(el, 'keypress')
             //过滤输入字符
             bind(el, 'keypress', evt => {
-                if (!reg.test(`${el.value}${evt.key}`)) {
+                if (evt.keyCode >= 48 && evt.keyCode <= 90 && !reg.test(`${el.value}${evt.key}`)) {
                     evt.preventDefault()
                 }
             })
