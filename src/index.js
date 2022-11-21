@@ -76,12 +76,12 @@ addBindingHandler((el, path, scope) => {
 })
 
 const updateCheckbox = (el, path, scope) => {
-    const tureVal = el.getAttribute('o-true-value') || true
+    const tureVal = el.getAttribute('o-true-value') ?? el.getAttribute('value') ?? true
     let value = get(scope, path)
     if (value instanceof Array) {
         el.checked = value.some(v => v == el.value)
     } else {
-        el.checked = value === tureVal
+        el.checked = value == tureVal
     }
 }
 /**
@@ -89,8 +89,8 @@ const updateCheckbox = (el, path, scope) => {
  */
 addBindingHandler((el, path, scope) => {
     if (el.type === 'checkbox' && el.nodeName == 'INPUT') {
-        const tureVal = el.getAttribute('o-true-value') || true
-        const falseVal = el.getAttribute('o-false-value') || false
+        const tureVal = el.getAttribute('o-true-value') ?? true
+        const falseVal = el.getAttribute('o-false-value') ?? false
         unbind(el, 'change')
         bind(el, 'change', () => {
             let value = get(scope, path)
