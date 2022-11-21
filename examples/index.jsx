@@ -101,6 +101,7 @@ define(
             <span>some</span>
             prop1:<input type="number" o-model="some.prop1"></input>  prop2:
             <input type="checkbox" o-model="some.prop2"></input>
+            prop3:  <input type="checkbox" o-model="some.prop3" o-true-value="Y" o-false-value="N"></input>
           </div>
           <button
             onClick={(evt) => {

@@ -1362,45 +1362,70 @@ var addBindingHandler = (handler) => {
 };
 var updateSelect = (el, path, scope) => {
   let val = get(scope, path);
+  if (val instanceof Array && el.multiple) {
+    Array.from(el.options).forEach((option) => {
+      if (val.some((v) => v == option.value)) {
+        option.selected = true;
+      } else {
+        option.selected = false;
+      }
+    });
+    return;
+  }
   if (val === false || val === null || val === void 0) {
     val = "";
   }
-  el.value = val.toString();
+  el.value = val;
 };
 addBindingHandler((el, path, scope) => {
   if (el.nodeName === "SELECT") {
     unbind(el, "change");
     bind(el, "change", () => {
-      set(scope, path, el.value);
+      const value = get(scope, path);
+      if (value instanceof Array) {
+        value.splice(0, value.length, ...Array.from(el.selectedOptions).filter((option) => option.value != "").map((option) => option.value));
+      } else {
+        set(scope, path, el.value);
+      }
     });
     return updateSelect;
   }
 });
 var updateRadio = (el, path, scope) => {
-  el.checked = get(scope, path) === el.value;
+  let val = get(scope, path);
+  if (val instanceof Array) {
+    el.checked = val.some((v) => v == el.value);
+    return;
+  }
+  el.checked = get(scope, path) == el.value;
 };
 addBindingHandler((el, path, scope) => {
   if (el.type === "radio" && el.nodeName == "INPUT") {
     unbind(el, "change");
     bind(el, "change", () => {
-      set(scope, path, el.value);
+      const value = get(scope, path);
+      if (value instanceof Array) {
+        value.splice(0, value.length, el.value);
+      } else {
+        set(scope, path, el.value);
+      }
     });
     return updateRadio;
   }
 });
 var updateCheckbox = (el, path, scope) => {
-  const tureVal = el.getAttribute("o-true-value") || true;
+  const tureVal = (el.prevProps && el.prevProps["o-true-value"]) ?? el.getAttribute("o-true-value") ?? true;
   let value = get(scope, path);
   if (value instanceof Array) {
-    el.checked = value.includes(el.value);
+    el.checked = value.some((v) => v == el.value);
   } else {
-    el.checked = value === tureVal;
+    el.checked = value == tureVal;
   }
 };
 addBindingHandler((el, path, scope) => {
   if (el.type === "checkbox" && el.nodeName == "INPUT") {
-    const tureVal = el.getAttribute("o-true-value") || true;
-    const falseVal = el.getAttribute("o-false-value") || false;
+    const tureVal = (el.prevProps && el.prevProps["o-true-value"]) ?? el.getAttribute("o-true-value") ?? true;
+    const falseVal = (el.prevProps && el.prevProps["o-false-value"]) ?? el.getAttribute("o-false-value") ?? false;
     unbind(el, "change");
     bind(el, "change", () => {
       let value = get(scope, path);
@@ -1424,12 +1449,12 @@ var updateInput = (el, path, scope) => {
 };
 addBindingHandler((el, path, scope) => {
   if (el.nodeName == "INPUT") {
-    let filter = el.getAttribute("filter");
-    if (filter) {
-      let reg = new RegExp(filter);
+    let pattern = el.getAttribute("pattern");
+    if (pattern) {
+      let reg = new RegExp(pattern);
       unbind(el, "keypress");
       bind(el, "keypress", (evt) => {
-        if (!reg.test(evt.key)) {
+        if (evt.keyCode >= 48 && evt.keyCode <= 90 && !reg.test(`${el.value}${evt.key}`)) {
           evt.preventDefault();
         }
       });
@@ -1441,10 +1466,29 @@ addBindingHandler((el, path, scope) => {
     return updateInput;
   }
 });
+var updateComponent = (el, path, scope) => {
+  el.value = get(scope, path);
+};
+addBindingHandler((el, path, scope) => {
+  if (Reflect.has(el, "value")) {
+    unbind(el, "change");
+    bind(el, "change", () => {
+      const value = get(scope, path);
+      if (value instanceof Array) {
+        value.splice(0, value.length, el.value);
+      } else {
+        set(scope, path, el.value);
+      }
+    });
+    return updateComponent;
+  }
+});
 extend2("model", (el, path, scope) => {
-  scope = scope || window;
   let raw = scope;
   scope = scope.bindingScope ?? scope.props?.bindingScope ?? scope;
+  if (scope === false) {
+    raw = scope = window;
+  }
   let bindings = raw.__bindings ?? (raw.__bindings = []);
   Promise.resolve().then(() => {
     for (let handler of BINDING_HANDLERS) {
@@ -1527,6 +1571,11 @@ define(
       }), "  prop2:", /* @__PURE__ */ h("input", {
         type: "checkbox",
         "o-model": "some.prop2"
+      }), "prop3:  ", /* @__PURE__ */ h("input", {
+        type: "checkbox",
+        "o-model": "some.prop3",
+        "o-true-value": "Y",
+        "o-false-value": "N"
       })), /* @__PURE__ */ h("button", {
         onClick: (evt) => {
           this.data.name = "sa";
