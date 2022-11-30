@@ -1,4 +1,20 @@
-import { extend, get, set, bind, unbind } from 'omi/src/extend'
+import { extend, get, set } from 'omi/src/extend'
+
+function eventProxy(e) {
+    return this._bindingListeners[e.type](e)
+}
+
+function bind(el, type, handler) {
+    el._bindingListeners = el._bindingListeners || {}
+    el._bindingListeners[type] = handler
+    el.addEventListener(type, eventProxy)
+}
+
+function unbind(el, type) {
+    el.removeEventListener(type, eventProxy)
+}
+
+
 const BINDING_HANDLERS = []
 
 const addBindingHandler = handler => {
