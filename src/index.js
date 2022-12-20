@@ -162,7 +162,7 @@ addBindingHandler((el, path, scope) => {
 //input
 
 const updateComponent = (el, path, scope) => {
-    el.value = get(scope, path)
+    el.value = get(scope, path) ?? null
     // checkRequired(el)
 }
 /**

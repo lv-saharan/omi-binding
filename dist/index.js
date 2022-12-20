@@ -166,7 +166,7 @@ addBindingHandler((el, path, scope) => {
   }
 });
 var updateComponent = (el, path, scope) => {
-  el.value = get(scope, path);
+  el.value = get(scope, path) ?? null;
 };
 addBindingHandler((el, path, scope) => {
   if (Reflect.has(el, "value")) {
