@@ -1356,6 +1356,17 @@ options_default.root.omi = omi;
 options_default.root.Omi.version = "6.25.8";
 
 // src/index.js
+function eventProxy3(e) {
+  return this._bindingListeners[e.type](e);
+}
+function bind2(el, type, handler) {
+  el._bindingListeners = el._bindingListeners || {};
+  el._bindingListeners[type] = handler;
+  el.addEventListener(type, eventProxy3);
+}
+function unbind2(el, type) {
+  el.removeEventListener(type, eventProxy3);
+}
 var BINDING_HANDLERS = [];
 var addBindingHandler = (handler) => {
   BINDING_HANDLERS.push(handler);
@@ -1379,11 +1390,15 @@ var updateSelect = (el, path, scope) => {
 };
 addBindingHandler((el, path, scope) => {
   if (el.nodeName === "SELECT") {
-    unbind(el, "change");
-    bind(el, "change", () => {
+    unbind2(el, "change");
+    bind2(el, "change", () => {
       const value = get(scope, path);
       if (value instanceof Array) {
-        value.splice(0, value.length, ...Array.from(el.selectedOptions).filter((option) => option.value != "").map((option) => option.value));
+        value.splice(
+          0,
+          value.length,
+          ...Array.from(el.selectedOptions).filter((option) => option.value != "").map((option) => option.value)
+        );
       } else {
         set(scope, path, el.value);
       }
@@ -1401,8 +1416,8 @@ var updateRadio = (el, path, scope) => {
 };
 addBindingHandler((el, path, scope) => {
   if (el.type === "radio" && el.nodeName == "INPUT") {
-    unbind(el, "change");
-    bind(el, "change", () => {
+    unbind2(el, "change");
+    bind2(el, "change", () => {
       const value = get(scope, path);
       if (value instanceof Array) {
         value.splice(0, value.length, el.value);
@@ -1426,8 +1441,8 @@ addBindingHandler((el, path, scope) => {
   if (el.type === "checkbox" && el.nodeName == "INPUT") {
     const tureVal = (el.prevProps && el.prevProps["o-true-value"]) ?? el.getAttribute("o-true-value") ?? true;
     const falseVal = (el.prevProps && el.prevProps["o-false-value"]) ?? el.getAttribute("o-false-value") ?? false;
-    unbind(el, "change");
-    bind(el, "change", () => {
+    unbind2(el, "change");
+    bind2(el, "change", () => {
       let value = get(scope, path);
       if (value instanceof Array) {
         let valSet = new Set(value);
@@ -1445,34 +1460,34 @@ addBindingHandler((el, path, scope) => {
   }
 });
 var updateInput = (el, path, scope) => {
-  el.value = get(scope, path) || "";
+  el.value = get(scope, path) ?? "";
 };
 addBindingHandler((el, path, scope) => {
   if (el.nodeName == "INPUT") {
-    let pattern = el.getAttribute("pattern");
+    let pattern = el.getAttribute("input-pattern");
     if (pattern) {
       let reg = new RegExp(pattern);
-      unbind(el, "keypress");
-      bind(el, "keypress", (evt) => {
-        if (evt.keyCode >= 48 && evt.keyCode <= 90 && !reg.test(`${el.value}${evt.key}`)) {
+      unbind2(el, "keypress");
+      bind2(el, "keypress", (evt) => {
+        if (evt.key.length == 1 && !reg.test(`${el.value}${evt.key}`)) {
           evt.preventDefault();
         }
       });
     }
-    unbind(el, "input");
-    bind(el, "input", (evt) => {
+    unbind2(el, "input");
+    bind2(el, "input", (evt) => {
       set(scope, path, el.value);
     });
     return updateInput;
   }
 });
 var updateComponent = (el, path, scope) => {
-  el.value = get(scope, path);
+  el.value = get(scope, path) ?? null;
 };
 addBindingHandler((el, path, scope) => {
   if (Reflect.has(el, "value")) {
-    unbind(el, "change");
-    bind(el, "change", () => {
+    unbind2(el, "change");
+    bind2(el, "change", () => {
       const value = get(scope, path);
       if (value instanceof Array) {
         value.splice(0, value.length, el.value);
@@ -1544,7 +1559,8 @@ define(
     render() {
       return /* @__PURE__ */ h("fieldset", null, /* @__PURE__ */ h("legend", null, "form binding"), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", null, "name:"), /* @__PURE__ */ h("input", {
         "o-model": "name",
-        style: "width:50rem;"
+        style: "width:50rem;",
+        "input-pattern": "^\\D+$"
       })), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", null, "gender:"), /* @__PURE__ */ h("input", {
         "o-model": "gender",
         type: "radio",

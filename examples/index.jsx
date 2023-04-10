@@ -51,7 +51,7 @@ define(
           <legend>form binding</legend>
           <div>
             <span>name:</span>
-            <input o-model="name" style="width:50rem;"></input>
+            <input o-model="name" style="width:50rem;" input-pattern="^\D+$"></input>
           </div>
           <div>
             <span>gender:</span>

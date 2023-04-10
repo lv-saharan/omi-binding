@@ -1,6 +1,6 @@
 {
   "name": "omi-binding",
-  "version": "1.0.13",
+  "version": "1.0.15",
   "description": "a model binding module",
   "main": "src/index.js",
   "scripts": {
