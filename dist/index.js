@@ -82,7 +82,11 @@ addBindingHandler((el, path, scope) => {
     bind(el, "change", () => {
       const value = get(scope, path);
       if (value instanceof Array) {
-        value.splice(0, value.length, ...Array.from(el.selectedOptions).filter((option) => option.value != "").map((option) => option.value));
+        value.splice(
+          0,
+          value.length,
+          ...Array.from(el.selectedOptions).filter((option) => option.value != "").map((option) => option.value)
+        );
       } else {
         set(scope, path, el.value);
       }
@@ -148,12 +152,12 @@ var updateInput = (el, path, scope) => {
 };
 addBindingHandler((el, path, scope) => {
   if (el.nodeName == "INPUT") {
-    let pattern = el.getAttribute("pattern");
+    let pattern = el.getAttribute("input-pattern");
     if (pattern) {
       let reg = new RegExp(pattern);
       unbind(el, "keypress");
       bind(el, "keypress", (evt) => {
-        if (evt.keyCode >= 48 && evt.keyCode <= 90 && !reg.test(`${el.value}${evt.key}`)) {
+        if (evt.key.length == 1 && !reg.test(`${el.value}${evt.key}`)) {
           evt.preventDefault();
         }
       });
